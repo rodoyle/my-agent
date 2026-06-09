@@ -52,8 +52,8 @@ TOOL_BUDGET = 800  # max tokens returned by any single tool call
 KEEP_TURNS = 6  # verbatim turns preserved during compaction
 KEEP_OBS = 3  # recent tool observations kept unmasked
 
-EMBEDDING_MODEL = ""
-PRIMARY_MODEL = ""
+EMBEDDING_MODEL = "all-MiniLM-L6-v2"
+PRIMARY_MODEL = "gemma-4-12B-it-OptiQ-4bit"
 
 
 # ===========================================================================
@@ -491,7 +491,7 @@ class MemoryTool(Tool):
 
                 db_path = pathlib.Path.home() / ".agent" / "memory"
                 db_path.mkdir(parents=True, exist_ok=True)
-                self._embedder = SentenceTransformer("all-MiniLM-L6-v2")
+                self._embedder = SentenceTransformer(EMBEDDING_MODEL)
                 self._chroma = chromadb.PersistentClient(path=str(db_path))
                 self._collection = self._chroma.get_or_create_collection("sessions")
             except ImportError:
