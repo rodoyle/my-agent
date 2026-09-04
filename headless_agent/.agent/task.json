@@ -1,0 +1,60 @@
+{
+  "schema_version": 1,
+  "run_id": "issue-1842-attempt-2",
+  "issue": {
+    "provider": "github",
+    "number": 1842,
+    "title": "Add readiness probe to worker deployment",
+    "body_markdown": "…original issue text…",
+    "labels": ["agent:ready", "area:worker"]
+  },
+  "objective": "Add an HTTP readiness probe to the worker Deployment.",
+  "acceptance_criteria": [
+    "The worker Deployment defines a readinessProbe on the documented health endpoint.",
+    "Helm rendering succeeds.",
+    "The repository's manifest validation succeeds.",
+    "Only files relevant to this change are modified."
+  ],
+  "non_goals": [
+    "Do not change liveness behavior.",
+    "Do not modify production cluster state.",
+    "Do not upgrade chart dependencies."
+  ],
+  "allowed_paths": [
+    "charts/worker/**",
+    "tests/worker/**",
+    "docs/worker/**",
+    ".agent/**"
+  ],
+  "required_checks": [
+    {
+      "name": "helm-render",
+      "command": "agentctl helm-template worker",
+      "timeout_seconds": 180
+    },
+    {
+      "name": "manifest-validation",
+      "command": "agentctl validate-manifests charts/worker",
+      "timeout_seconds": 300
+    },
+    {
+      "name": "unit-tests",
+      "command": "agentctl test worker",
+      "timeout_seconds": 600
+    }
+  ],
+  "allowed_operations": {
+    "git_commit": false,
+    "git_push": false,
+    "open_pull_request": false,
+    "cluster_mode": "none",
+    "network_hosts": ["api.anthropic.com", "github.com"]
+  },
+  "budget": {
+    "max_model_turns": 40,
+    "max_shell_commands": 80,
+    "max_validation_cycles": 4,
+    "wall_clock_seconds": 2700
+  },
+  "result_path": ".agent/result.json"
+}

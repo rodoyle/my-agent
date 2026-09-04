@@ -1,0 +1,29 @@
+routing:
+  coding.primary:
+    allowed_for:
+      - issue-worker
+      - pr-fix-worker
+    routes:
+      - provider: anthropic
+        model: claude-sonnet
+      - provider: openrouter
+        model: openrouter/auto
+    fallback: deny
+
+  coding.review:
+    allowed_for:
+      - security-reviewer
+      - pr-reviewer
+    routes:
+      - provider: anthropic
+        model: claude-opus
+    fallback: deny
+
+  coding.local:
+    allowed_for:
+      - low-risk-triage
+      - summarizer
+    routes:
+      - provider: llama-cpp
+        model: Ternary-Bonsai-27B-Q2_0
+    fallback: deny

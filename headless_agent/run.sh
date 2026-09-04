@@ -1,0 +1,13 @@
+exec pi \
+  --mode rpc \
+  --no-session \
+  --thinking high \
+  --tools read,grep,find,ls,write,edit,bash \
+  --no-extensions \
+  --no-skills \
+  --no-prompt-templates \
+  --extension /workspace/.pi/extensions/task-contract.ts \
+  --skill /workspace/.pi/skills/task-execution \
+  --skill /workspace/.pi/skills/verification \
+  --skill /workspace/.pi/skills/kubernetes-dev \
+  --append-system-prompt "$(cat /workspace/.pi/APPEND_SYSTEM.md)"

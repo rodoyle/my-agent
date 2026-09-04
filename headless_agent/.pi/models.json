@@ -1,0 +1,19 @@
+{
+  "models": [
+    {
+      "id": "coding.primary",
+      "base_url": "https://llm-gateway.internal/v1",
+      "provider": "openai-compatible"
+    },
+    {
+      "id": "coding.review",
+      "base_url": "https://llm-gateway.internal/v1",
+      "provider": "openai-compatible"
+    },
+    {
+      "id": "coding.local",
+      "base_url": "https://llm-gateway.internal/v1",
+      "provider": "openai-compatible"
+    }
+  ]
+}

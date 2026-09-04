@@ -1,0 +1,28 @@
+env:
+  - name: OPENAI_BASE_URL
+    value: https://llm-gateway.ai-system.svc.cluster.local/v1
+  - name: OPENAI_API_KEY
+    valueFrom:
+      secretKeyRef:
+        name: agent-run-gh-1842
+        key: gateway-token
+  - name: PI_MODEL
+    value: coding.primary
+  - name: AGENT_RUN_ID
+    value: gh-1842-attempt-2
+    env:
+  - name: PI_CODING_AGENT_DIR
+    value: /run/pi/config
+  - name: PI_CODING_AGENT_SESSION_DIR
+    value: /run/pi/sessions/$(RUN_ID)
+volumeMounts:
+  - name: pi-session
+    mountPath: /run/pi/sessions
+  - name: workspace
+    mountPath: /workspace
+volumes:
+  - name: pi-session
+    emptyDir: {}
+  - name: workspace
+    emptyDir: {}
+    

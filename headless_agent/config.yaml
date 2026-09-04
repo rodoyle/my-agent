@@ -1,0 +1,15 @@
+run_id: gh-1842-attempt-2
+agent_class: k8s-dev-worker
+repo: platform/worker
+risk_level: medium
+model_policy:
+  allowed_aliases:
+    - coding.primary
+  selected_alias: coding.primary
+  fallback_allowed: false
+  max_input_tokens: 180000
+  max_output_tokens: 48000
+  max_requests: 50
+  max_cost_usd: 8.00
+  max_concurrency: 1
+  expires_at: "2026-08-18T04:30:00Z"

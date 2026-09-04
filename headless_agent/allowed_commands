@@ -1,0 +1,7 @@
+agentctl git status|diff|show|log|checkout-worktree
+agentctl test <named-suite>
+agentctl lint <named-suite>
+agentctl helm-template <chart>
+agentctl validate-manifests <path>
+agentctl k8s [render|apply|wait|events|logs|cleanup] <run-scoped args>
+agentctl github [read-only metadata operations]

@@ -1467,34 +1467,6 @@ wheels = [
 ]
 
 [[package]]
-name = "my-agent"
-version = "0.1.0"
-source = { virtual = "." }
-dependencies = [
-    { name = "chromadb" },
-    { name = "mlx-code", version = "0.0.1", source = { registry = "https://pypi.org/simple" }, marker = "python_full_version < '3.12.8'" },
-    { name = "mlx-code", version = "0.0.11", source = { registry = "https://pypi.org/simple" }, marker = "python_full_version >= '3.12.8'" },
-    { name = "pydantic" },
-    { name = "sentence-transformers" },
-]
-
-[package.dev-dependencies]
-dev = [
-    { name = "ipykernel" },
-]
-
-[package.metadata]
-requires-dist = [
-    { name = "chromadb", specifier = ">=1.5.9" },
-    { name = "mlx-code", specifier = ">=0.0.1" },
-    { name = "pydantic", specifier = ">=2.13.4" },
-    { name = "sentence-transformers", specifier = ">=5.5.1" },
-]
-
-[package.metadata.requires-dev]
-dev = [{ name = "ipykernel", specifier = ">=7.2.0" }]
-
-[[package]]
 name = "narwhals"
 version = "2.22.1"
 source = { registry = "https://pypi.org/simple" }
@@ -2969,6 +2941,34 @@ sdist = { url = "https://files.pythonhosted.org/packages/1f/ea/49c993d6dfdd7338c
 wheels = [
     { url = "https://files.pythonhosted.org/packages/c1/d4/59e74daffcb57a07668852eeeb6035af9f32cbfd7a1d2511f17d2fe6a738/smmap-5.0.3-py3-none-any.whl", hash = "sha256:c106e05d5a61449cf6ba9a1e650227ecfb141590d2a98412103ff35d89fc7b2f", size = 24390, upload-time = "2026-03-09T03:43:24.361Z" },
 ]
+
+[[package]]
+name = "special-agent"
+version = "0.1.0"
+source = { editable = "." }
+dependencies = [
+    { name = "chromadb" },
+    { name = "mlx-code", version = "0.0.1", source = { registry = "https://pypi.org/simple" }, marker = "python_full_version < '3.12.8'" },
+    { name = "mlx-code", version = "0.0.11", source = { registry = "https://pypi.org/simple" }, marker = "python_full_version >= '3.12.8'" },
+    { name = "pydantic" },
+    { name = "sentence-transformers" },
+]
+
+[package.dev-dependencies]
+dev = [
+    { name = "ipykernel" },
+]
+
+[package.metadata]
+requires-dist = [
+    { name = "chromadb", specifier = ">=1.5.9" },
+    { name = "mlx-code", specifier = ">=0.0.1" },
+    { name = "pydantic", specifier = ">=2.13.4" },
+    { name = "sentence-transformers", specifier = ">=5.5.1" },
+]
+
+[package.metadata.requires-dev]
+dev = [{ name = "ipykernel", specifier = ">=7.2.0" }]
 
 [[package]]
 name = "stack-data"

@@ -1,0 +1,28 @@
+{
+  "schema_version": 1,
+  "terminal_state": "SUCCESS",
+  "summary": "Added readiness probe to worker Helm Deployment.",
+  "changed_paths": [
+    "charts/worker/templates/deployment.yaml",
+    "tests/worker/render_test.sh"
+  ],
+  "acceptance_criteria": [
+    {
+      "criterion": "Readiness probe exists",
+      "status": "passed",
+      "evidence": "helm template output contains spec.template.spec.containers[0].readinessProbe"
+    }
+  ],
+  "commands": [
+    {
+      "command": "agentctl helm-template worker",
+      "exit_code": 0,
+      "result": "passed"
+    }
+  ],
+  "risks_or_followups": [],
+  "suggested_pr": {
+    "title": "Add readiness probe to worker deployment",
+    "body_markdown": "## Summary\n…\n\n## Validation\n- `agentctl helm-template worker`"
+  }
+}

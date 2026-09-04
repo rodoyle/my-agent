@@ -22,6 +22,8 @@ import subprocess
 import uuid
 from typing import Any
 
+import mlx_code
+
 # ---------------------------------------------------------------------------
 # mlx-code imports
 # ---------------------------------------------------------------------------
@@ -544,7 +546,7 @@ Token discipline:
 # ===========================================================================
 
 
-async def main():
+async def run():
     # ------------------------------------------------------------------
     # MCP SERVER STARTUP
     # ------------------------------------------------------------------
@@ -610,7 +612,3 @@ async def main():
     finally:
         for client in mcp_clients:
             client.terminate()
-
-
-if __name__ == "__main__":
-    asyncio.run(main())
