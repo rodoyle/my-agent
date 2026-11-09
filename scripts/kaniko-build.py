@@ -33,9 +33,15 @@ DOCKERFILES = {
 }
 
 
-def render(image: str, destination: str, base_image: str | None = None,
-           name: str | None = None, insecure_registry: str | None = None,
-           node: str = "med-laptop-2", root: Path = ROOT) -> dict[str, Any]:
+def render(
+    image: str,
+    destination: str,
+    base_image: str | None = None,
+    name: str | None = None,
+    insecure_registry: str | None = None,
+    node: str = "med-laptop-2",
+    root: Path = ROOT,
+) -> dict[str, Any]:
     """Render an isolated, namespace-scoped build with a materialized context."""
     if image not in DOCKERFILES:
         raise ValueError("Unknown image")

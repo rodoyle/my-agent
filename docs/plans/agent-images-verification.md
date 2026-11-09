@@ -109,5 +109,10 @@ reviewer. Cluster builds and deployed smoke were executed by the parent.
   A proposed source-build stage for Herdr is still in drafting, not adopted;
   these images currently use verified upstream binaries and contain no Rust
   toolchain.
-- Revoke the temporary build RoleBinding with the user's admin identity after
-  verification; the agent's narrow Role intentionally cannot delete RBAC.
+- The user revoked the temporary build RoleBinding. Final agent-identity checks
+  found no `pi-agent-image-build-task` binding and returned `no` for creating
+  Jobs in `build`; `environment.yaml` is restored to base identity only.
+- The agents submodule implementation is published on its `main` branch. The
+  parent infra branch had pre-existing divergent history; the user explicitly
+  chose to retain its commits locally rather than force-push or reconcile that
+  unrelated history as part of this image goal.
