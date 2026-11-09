@@ -1,0 +1,15 @@
+{
+  "name": "agent-image-runtime",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Pinned Node-hosted Pi runtime and image-wide extension dependencies",
+  "engines": { "node": ">=22.19.0" },
+  "dependencies": {
+    "@earendil-works/pi-coding-agent": "1.5.0",
+    "@kubernetes/client-node": "2.0.2",
+    "pi-goal-list-loop-audit": "0.39.65",
+    "pi-intercom": "0.18.1",
+    "pi-lens": "4.4.10",
+    "pi-subagents": "0.87.0"
+  }
+}

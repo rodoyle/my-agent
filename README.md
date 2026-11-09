@@ -1,5 +1,19 @@
 # Personal Coding Agent
 
+## Container agents
+
+The shared Pi image and interactive devpod are implemented in `base/` and
+`devpod/`; `headless_agent/` and `_template/` inherit the same runtime.
+Pi and its extensions run on **Node/npm**; **Bun** is available for Ovis and
+project tooling. Images run as a non-root `agent` with writable per-worker
+state, and are built using **Kaniko in the k3s `build` namespace**.
+
+See [the image plan](docs/plans/agent-images.md) for runtime research, exact
+pins, build commands, startup/security boundaries and verification gates.
+The headless RPC image is distinct from the unfinished SDK/controller example.
+
+## Local-first experiment
+
 Most agent harnesses assume 128k+ context windows, which doesn't work for offline and locally hosted agents.
 Still, I am lazy and want to use these tools while disconnected.
 OMLX is more than capable of sufficient tokens per second now for personal use with a Gemma or QWen class MoE model on unified RAM.

@@ -1,2 +1,5 @@
 .DS_Store
 .log.json
+node_modules/
+__pycache__/
+*.pyc

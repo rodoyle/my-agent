@@ -1,0 +1,364 @@
+{
+  "builds": [
+    {
+      "name": "agents-base-14e9bef265-nnbb7",
+      "phase": "Failed",
+      "node": "med-laptop-2",
+      "containers": [
+        {
+          "name": "kaniko",
+          "image": "gcr.io/kaniko-project/executor:v1.23.2",
+          "args": [
+            "--dockerfile=/context/base/Dockerfile",
+            "--context=dir:///context",
+            "--destination=192.168.0.48:30500/agents-base:goal-20261109",
+            "--cache=false",
+            "--snapshot-mode=full",
+            "--digest-file=/dev/termination-log",
+            "--insecure-registry=192.168.0.48:30500"
+          ],
+          "securityContext": {
+            "allowPrivilegeEscalation": false
+          }
+        }
+      ],
+      "termination": [
+        {
+          "containerID": "containerd://922a4bef8cbef235be29b84ad9b9bd5cda692084ef5fa006d37367ab73a1727f",
+          "exitCode": 1,
+          "finishedAt": "2026-11-09T05:04:25Z",
+          "reason": "Error",
+          "startedAt": "2026-11-09T04:59:38Z"
+        }
+      ],
+      "gateOutput": [
+        "Ovis: installed the Rust PTY host of release v0.5.1 (sha256 044eb0dca08d844a9564d9a5f23129d538b755fd6fd4747f7966494d46676bd2) at /opt/ovis/bin/ovis-pty-sidecar",
+        "AssertionError [ERR_ASSERTION]: No loaded commands from pi-subagents; stderr: "
+      ]
+    },
+    {
+      "name": "agents-base-db7f9c1178-8pmfc",
+      "phase": "Succeeded",
+      "node": "med-laptop-2",
+      "containers": [
+        {
+          "name": "kaniko",
+          "image": "gcr.io/kaniko-project/executor:v1.23.2",
+          "args": [
+            "--dockerfile=/context/base/Dockerfile",
+            "--context=dir:///context",
+            "--destination=192.168.0.48:30500/agents-base:goal-20261109",
+            "--cache=false",
+            "--snapshot-mode=full",
+            "--digest-file=/dev/termination-log",
+            "--insecure-registry=192.168.0.48:30500"
+          ],
+          "securityContext": {
+            "allowPrivilegeEscalation": false
+          }
+        }
+      ],
+      "termination": [
+        {
+          "containerID": "containerd://79a7e72002d29d51e200274e2b64bc75f2c54e82dc2273fd7baae1fc844d33a8",
+          "exitCode": 0,
+          "finishedAt": "2026-11-09T05:18:28Z",
+          "message": "sha256:ece13bedf90ecb81e06ea32511bec79764579b6ace15161413218043425d7c39",
+          "reason": "Completed",
+          "startedAt": "2026-11-09T05:12:31Z"
+        }
+      ],
+      "gateOutput": [
+        "Ovis: installed the Rust PTY host of release v0.5.1 (sha256 044eb0dca08d844a9564d9a5f23129d538b755fd6fd4747f7966494d46676bd2) at /opt/ovis/bin/ovis-pty-sidecar",
+        "PASS: non-root Node Pi RPC and all four extension registrations; native AST and Kubernetes imports",
+        "\u001b[36mINFO\u001b[0m[0356] Pushed 192.168.0.48:30500/agents-base@sha256:ece13bedf90ecb81e06ea32511bec79764579b6ace15161413218043425d7c39 "
+      ]
+    },
+    {
+      "name": "agents-devpod-a200007397-4pmwj",
+      "phase": "Succeeded",
+      "node": "med-laptop-2",
+      "containers": [
+        {
+          "name": "kaniko",
+          "image": "gcr.io/kaniko-project/executor:v1.23.2",
+          "args": [
+            "--dockerfile=/context/devpod/Dockerfile",
+            "--context=dir:///context",
+            "--destination=192.168.0.48:30500/agents-devpod:goal-20261109",
+            "--cache=false",
+            "--snapshot-mode=full",
+            "--digest-file=/dev/termination-log",
+            "--build-arg=BASE_IMAGE=192.168.0.48:30500/agents-base@sha256:ece13bedf90ecb81e06ea32511bec79764579b6ace15161413218043425d7c39",
+            "--insecure-registry=192.168.0.48:30500"
+          ],
+          "securityContext": {
+            "allowPrivilegeEscalation": false
+          }
+        }
+      ],
+      "termination": [
+        {
+          "containerID": "containerd://05869cffa4a6c661893f18fb907c20306c736b4ad889ab1797d89336720a2370",
+          "exitCode": 0,
+          "finishedAt": "2026-11-09T05:20:17Z",
+          "message": "sha256:780a0d8780a161eeab7a72fad75c7561dc3985e69543167e5a48f29c87901744",
+          "reason": "Completed",
+          "startedAt": "2026-11-09T05:18:46Z"
+        }
+      ],
+      "gateOutput": [
+        "PASS: non-root Node Pi RPC and all four extension registrations; native AST and Kubernetes imports",
+        "\u001b[36mINFO\u001b[0m[0090] Pushed 192.168.0.48:30500/agents-devpod@sha256:780a0d8780a161eeab7a72fad75c7561dc3985e69543167e5a48f29c87901744 "
+      ]
+    },
+    {
+      "name": "agents-headless-ba2b01156e-5kc6l",
+      "phase": "Succeeded",
+      "node": "med-laptop-2",
+      "containers": [
+        {
+          "name": "kaniko",
+          "image": "gcr.io/kaniko-project/executor:v1.23.2",
+          "args": [
+            "--dockerfile=/context/headless_agent/Dockerfile",
+            "--context=dir:///context",
+            "--destination=192.168.0.48:30500/agents-headless:goal-20261109",
+            "--cache=false",
+            "--snapshot-mode=full",
+            "--digest-file=/dev/termination-log",
+            "--build-arg=BASE_IMAGE=192.168.0.48:30500/agents-base@sha256:ece13bedf90ecb81e06ea32511bec79764579b6ace15161413218043425d7c39",
+            "--insecure-registry=192.168.0.48:30500"
+          ],
+          "securityContext": {
+            "allowPrivilegeEscalation": false
+          }
+        }
+      ],
+      "termination": [
+        {
+          "containerID": "containerd://ce014988e49887152cadbf840d15f528f30abc3d6fb3767cbb35de3675363a55",
+          "exitCode": 0,
+          "finishedAt": "2026-11-09T05:18:48Z",
+          "message": "sha256:55d66a116099d447e59feb58d37e7ca4d733a255154b24fd22e8b424c24a734c",
+          "reason": "Completed",
+          "startedAt": "2026-11-09T05:18:47Z"
+        }
+      ],
+      "gateOutput": [
+        "\u001b[36mINFO\u001b[0m[0000] Pushed 192.168.0.48:30500/agents-headless@sha256:55d66a116099d447e59feb58d37e7ca4d733a255154b24fd22e8b424c24a734c "
+      ]
+    },
+    {
+      "name": "agents-template-ae6554281a-vtjbd",
+      "phase": "Succeeded",
+      "node": "med-laptop-2",
+      "containers": [
+        {
+          "name": "kaniko",
+          "image": "gcr.io/kaniko-project/executor:v1.23.2",
+          "args": [
+            "--dockerfile=/context/_template/Dockerfile",
+            "--context=dir:///context",
+            "--destination=192.168.0.48:30500/agents-template:goal-20261109",
+            "--cache=false",
+            "--snapshot-mode=full",
+            "--digest-file=/dev/termination-log",
+            "--build-arg=BASE_IMAGE=192.168.0.48:30500/agents-base@sha256:ece13bedf90ecb81e06ea32511bec79764579b6ace15161413218043425d7c39",
+            "--insecure-registry=192.168.0.48:30500"
+          ],
+          "securityContext": {
+            "allowPrivilegeEscalation": false
+          }
+        }
+      ],
+      "termination": [
+        {
+          "containerID": "containerd://6f32a195d613ef8bad2ec1680d55b8b646e0c14c997535755ced3d97303affa9",
+          "exitCode": 0,
+          "finishedAt": "2026-11-09T05:18:48Z",
+          "message": "sha256:b5bcc2483d4e9bdb539ee432677e302cc942bf038457369377701b1edec07304",
+          "reason": "Completed",
+          "startedAt": "2026-11-09T05:18:47Z"
+        }
+      ],
+      "gateOutput": [
+        "\u001b[36mINFO\u001b[0m[0000] Pushed 192.168.0.48:30500/agents-template@sha256:b5bcc2483d4e9bdb539ee432677e302cc942bf038457369377701b1edec07304 "
+      ]
+    }
+  ],
+  "runtime": [
+    {
+      "name": "agents-base-smoke",
+      "phase": "Succeeded",
+      "node": "med-laptop-2",
+      "containers": [
+        {
+          "name": "smoke",
+          "image": "localhost:30500/agents-base@sha256:ece13bedf90ecb81e06ea32511bec79764579b6ace15161413218043425d7c39",
+          "args": [
+            "node",
+            "/opt/agent-tests/image-smoke.mjs"
+          ],
+          "securityContext": {
+            "allowPrivilegeEscalation": false,
+            "capabilities": {
+              "drop": [
+                "ALL"
+              ]
+            },
+            "readOnlyRootFilesystem": true,
+            "runAsGroup": 1000,
+            "runAsNonRoot": true,
+            "runAsUser": 1000
+          }
+        }
+      ],
+      "termination": [
+        {
+          "containerID": "containerd://58a229dff29aeb24cfee761448343ca87918cfc5ed72c8946f0a0c33fdb6aa08",
+          "exitCode": 0,
+          "finishedAt": "2026-11-09T05:22:48Z",
+          "reason": "Completed",
+          "startedAt": "2026-11-09T05:21:59Z"
+        }
+      ],
+      "podSecurityContext": {
+        "fsGroup": 1000,
+        "seccompProfile": {
+          "type": "RuntimeDefault"
+        }
+      },
+      "volumes": [
+        {
+          "emptyDir": {},
+          "name": "home"
+        },
+        {
+          "emptyDir": {},
+          "name": "workspace"
+        },
+        {
+          "emptyDir": {},
+          "name": "tmp"
+        }
+      ],
+      "gateOutput": [
+        "PASS: non-root Node Pi RPC and all four extension registrations; native AST and Kubernetes imports"
+      ]
+    },
+    {
+      "name": "agents-devpod-smoke",
+      "phase": "Succeeded",
+      "node": "med-laptop-2",
+      "containers": [
+        {
+          "name": "smoke",
+          "image": "localhost:30500/agents-devpod@sha256:780a0d8780a161eeab7a72fad75c7561dc3985e69543167e5a48f29c87901744",
+          "args": [
+            "node",
+            "/opt/agent-tests/image-smoke.mjs"
+          ],
+          "securityContext": {
+            "allowPrivilegeEscalation": false,
+            "capabilities": {
+              "drop": [
+                "ALL"
+              ]
+            },
+            "readOnlyRootFilesystem": true,
+            "runAsGroup": 1000,
+            "runAsNonRoot": true,
+            "runAsUser": 1000
+          }
+        }
+      ],
+      "termination": [
+        {
+          "containerID": "containerd://72d4a976989ff2d32dfbe2b97107981b5e4b0d0325a323a1e10c5400638c12cf",
+          "exitCode": 0,
+          "finishedAt": "2026-11-09T05:22:51Z",
+          "reason": "Completed",
+          "startedAt": "2026-11-09T05:22:01Z"
+        }
+      ],
+      "podSecurityContext": {
+        "fsGroup": 1000,
+        "seccompProfile": {
+          "type": "RuntimeDefault"
+        }
+      },
+      "volumes": [
+        {
+          "emptyDir": {},
+          "name": "home"
+        },
+        {
+          "emptyDir": {},
+          "name": "workspace"
+        },
+        {
+          "emptyDir": {},
+          "name": "tmp"
+        }
+      ],
+      "gateOutput": [
+        "PASS: non-root Node Pi RPC and all four extension registrations; native AST and Kubernetes imports"
+      ]
+    },
+    {
+      "name": "agents-headless-smoke",
+      "phase": "Succeeded",
+      "node": "med-laptop-2",
+      "containers": [
+        {
+          "name": "smoke",
+          "image": "localhost:30500/agents-headless@sha256:55d66a116099d447e59feb58d37e7ca4d733a255154b24fd22e8b424c24a734c",
+          "args": null,
+          "securityContext": {
+            "allowPrivilegeEscalation": false,
+            "capabilities": {
+              "drop": [
+                "ALL"
+              ]
+            },
+            "readOnlyRootFilesystem": true,
+            "runAsGroup": 1000,
+            "runAsNonRoot": true,
+            "runAsUser": 1000
+          }
+        }
+      ],
+      "termination": [
+        {
+          "containerID": "containerd://6be2f0fe39fd7c97073c58645e5c82878f49aff80b6055eb428b5281102e9c7c",
+          "exitCode": 0,
+          "finishedAt": "2026-11-09T05:22:00Z",
+          "reason": "Completed",
+          "startedAt": "2026-11-09T05:21:59Z"
+        }
+      ],
+      "podSecurityContext": {
+        "fsGroup": 1000,
+        "seccompProfile": {
+          "type": "RuntimeDefault"
+        }
+      },
+      "volumes": [
+        {
+          "emptyDir": {},
+          "name": "home"
+        },
+        {
+          "emptyDir": {},
+          "name": "workspace"
+        },
+        {
+          "emptyDir": {},
+          "name": "tmp"
+        }
+      ],
+      "gateOutput": []
+    }
+  ]
+}
