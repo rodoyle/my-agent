@@ -1,0 +1,23 @@
+{
+  "status": "passed",
+  "revision": "6971a5ae1a36cc4f93fa6ec5395ac10d1f964a66",
+  "tag": "run-42960704684-1",
+  "images": {
+    "base": {
+      "reference": "ghcr.io/rodoyle/agents-base@sha256:7320023cf316fb78a148ad0fcf9eaaa264b12fb7258454c70173d0d74fc209fc",
+      "latest": "ghcr.io/rodoyle/agents-base:latest"
+    },
+    "devpod": {
+      "reference": "ghcr.io/rodoyle/agents-devpod@sha256:0fafca233d7c9c147f626b825e6fd545070dfe43a32055bc5aeff946ba4404f1",
+      "latest": "ghcr.io/rodoyle/agents-devpod:latest"
+    },
+    "headless": {
+      "reference": "ghcr.io/rodoyle/agents-headless@sha256:0d1f7fb847c4881be382ccf8269b79e51c23cd206154e01823db1fab075c41e7",
+      "latest": "ghcr.io/rodoyle/agents-headless:latest"
+    },
+    "template": {
+      "reference": "ghcr.io/rodoyle/agents-template@sha256:e85a7d70d2e70b4a3a6fda1f0df40eb978466f2ca2bf07d91386447fd180c038",
+      "latest": "ghcr.io/rodoyle/agents-template:latest"
+    }
+  }
+}

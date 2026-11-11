@@ -1,0 +1,34 @@
+{
+  "status": "passed",
+  "revision": "6971a5ae1a36cc4f93fa6ec5395ac10d1f964a66",
+  "source": "https://github.com/rodoyle/my-agent",
+  "tag": "run-42960704684-1",
+  "platform": "linux/amd64",
+  "images": {
+    "base": {
+      "reference": "localhost:5000/agents-base@sha256:64e06557cff06ab8c1d1b6d8e5e33a80de6c7a4c786e139cd210b5e179be7782",
+      "smoke": "passed",
+      "archive_tag": "localhost:5000/agents-base:run-42960704684-1"
+    },
+    "devpod": {
+      "reference": "localhost:5000/agents-devpod@sha256:64329257353a828a1d13ea98b117e4ddedc6af73f0be8132845e2a9d2e443a0e",
+      "smoke": "passed",
+      "archive_tag": "localhost:5000/agents-devpod:run-42960704684-1"
+    },
+    "headless": {
+      "reference": "localhost:5000/agents-headless@sha256:3dfc1d390d919d355939f6a4aa27d3a5ae6ecddff0dfabfe174cb19ec6dccf96",
+      "smoke": "passed",
+      "archive_tag": "localhost:5000/agents-headless:run-42960704684-1"
+    },
+    "template": {
+      "reference": "localhost:5000/agents-template@sha256:47cea773bda21390c107ef511c8faa0f407cd44773ad9160a880088714b46b1c",
+      "smoke": "passed",
+      "archive_tag": "localhost:5000/agents-template:run-42960704684-1"
+    }
+  },
+  "inputs": {
+    "package.json": "779bbe1e10a8c53080392288ad8f28fa3418671128f9c329111993c7c6e90c4c",
+    "package-lock.json": "d079d594bf5abe9e0d3015a83536274039a8707a953a595f64062b2c9ad9cc01"
+  },
+  "archive_sha256": "1fcc1977bc437f9fa8a073f42dd1f63ea5128cb3020139fe1efb56d305924b32"
+}

@@ -14,6 +14,8 @@ The headless RPC image is distinct from the unfinished SDK/controller example.
 [Image automation](docs/plans/agent-image-automation.md) describes the weekly and
 manual Pi/extension refresh, gated image rebuilds, GHCR publication, exact-digest
 release reports and short-lived workflow-token boundary.
+[CI release verification](docs/plans/agent-image-automation-verification.md)
+records the successful four-image GHCR release and publish-only recovery run.
 
 ## Local-first experiment
 
