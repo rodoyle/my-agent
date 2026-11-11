@@ -32,8 +32,12 @@ Docker build, local Mac image build, kubeconfig or cluster grant is needed.
 
 `scripts/refresh-runtime.py` queries public npm for Pi and the
 `piImage.extensions` catalog in `base/runtime/package.json`. It refuses
-prereleases, non-exact pins and downgrades. Unlisted dependencies remain pinned;
-Node, Bun, Herdr, Ovis and kubectl are not silently upgraded.
+prereleases, non-exact pins and versions below the **committed input pins**.
+This is not a comparison with the last published release: if npm retags `latest`
+to a lower version still above the baseline, the resolver accepts it. Review
+release receipts or advance committed pins when a higher version must become a
+minimum. Unlisted dependencies remain pinned; Node, Bun, Herdr, Ovis and kubectl
+are not silently upgraded.
 
 Resolution uses a temporary directory, disabled npm lifecycle scripts and no
 personal npm configuration. The tool **never edits source inputs**. It publishes
@@ -100,6 +104,10 @@ manifest representations may change during archive load/push, so use those
 final GHCR digests for deployment.
 
 Only after all four unique-tag pushes succeed can `latest` be promoted.
+Before each alias update the publisher checks the public repository's current
+main HEAD against the tested revision. A stale rerun fails closed instead of
+rolling aliases back; unique run tags remain available. Main can still advance
+between a head check and its push, so this is not a registry/git transaction.
 `promote_latest=false` still publishes and verifies unique tags. A build, smoke
 or unique-tag push failure never reaches alias promotion. Four registry aliases
 cannot be updated atomically: a network error during promotion can advance only
@@ -121,6 +129,13 @@ The large tested-image archive is a one-day handoff artifact. Runtime manifests
 also remain in published images. No automated image/tag deletion is performed.
 Failed attempts preserve partial JSON reports when available; a failed build or
 publication is not a successful release.
+
+Partial reruns use the producing jobs' artifact names and build tag through job
+outputs, not the consuming attempt number. A publish-only rerun therefore reuses
+the exact tested bytes and tag; a failed-build rerun reuses prepare's successful
+inputs. If the one-day archive has expired, choose **re-run all jobs**. Rerunning
+all jobs refreshes inputs again when enabled. Stale revisions can publish unique
+tags but cannot promote `latest`; start a fresh main run instead.
 
 For reproduction, check out the receipt's revision, restore its runtime input
 pair from artifacts or an image, and run the credential-free builder on native

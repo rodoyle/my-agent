@@ -52,6 +52,8 @@ def validate(report: dict[str, Any], directory: Path, tag: str, revision: str, n
         raise ValueError("Invalid publication tag or source revision")
     if report.get("status") != "passed" or report.get("tag") != tag or report.get("revision") != revision:
         raise ValueError("Build receipt is not a passed result for this run and revision")
+    if not re.fullmatch(r"https://github\.com/[A-Za-z0-9_.-]+/[A-Za-z0-9_.-]+", report.get("source", "")):
+        raise ValueError("Build source must identify a public GitHub repository")
     if set(report["images"]) != set(IMAGES):
         raise ValueError("Build receipt is missing required images")
     for image, record in report["images"].items():
@@ -94,6 +96,9 @@ def publish(
             report["images"][image] = {"reference": f"{reference}@{digest}"}
         if promote:
             for image, record in report["images"].items():
+                head = runner(["git", "ls-remote", "--exit-code", build["source"], "refs/heads/main"], 30)
+                if head.strip() != f"{revision}\trefs/heads/main":
+                    raise ValueError("Refusing latest promotion: source revision is no longer main HEAD")
                 reference = f"{namespace}/agents-{image}"
                 latest = reference + ":latest"
                 runner(["docker", "tag", reference + ":" + tag, latest], 30)

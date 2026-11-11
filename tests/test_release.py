@@ -244,6 +244,8 @@ class ImageReleaseTests(unittest.TestCase):
     def publisher(self, arguments, _timeout):
         """Return a registry receipt without running image or build commands."""
         self.publish_calls.append(arguments)
+        if arguments[0] == "git":
+            return getattr(self, "remote_head", "a" * 40) + "\trefs/heads/main\n"
         if arguments[1] == "push":
             if self.fail_push:
                 raise subprocess.CalledProcessError(1, arguments)
@@ -258,15 +260,31 @@ class ImageReleaseTests(unittest.TestCase):
         self.publish_calls = []
         self.fail_push = False
         report = PUBLISH.publish(
-            self.root / "output", "ghcr.io/example", "run-123-1", "a" * 40, True, self.publisher,
+            self.root / "output",
+            "ghcr.io/example",
+            "run-123-1",
+            "a" * 40,
+            True,
+            self.publisher,
         )
         self.assertEqual(report["status"], "passed")
         self.assertFalse(any(args[1] in ("run", "build") for args in self.publish_calls))
         pushes = [args[-1] for args in self.publish_calls if args[1] == "push"]
         first_latest = next(index for index, reference in enumerate(pushes) if reference.endswith(":latest"))
-        self.assertEqual(set(pushes[:first_latest]), {
-            f"ghcr.io/example/agents-{image}:run-123-1" for image in PUBLISH.IMAGES
-        })
+        self.assertEqual(
+            set(pushes[:first_latest]), {f"ghcr.io/example/agents-{image}:run-123-1" for image in PUBLISH.IMAGES}
+        )
+
+    def test_stale_source_rerun_cannot_promote_latest(self):
+        """Preserve unique tags but reject alias changes after main advances."""
+        self.run_release()
+        self.publish_calls = []
+        self.fail_push = False
+        self.remote_head = "b" * 40
+        with self.assertRaisesRegex(ValueError, "no longer main HEAD"):
+            PUBLISH.publish(self.root / "output", "ghcr.io/example", "run-123-1", "a" * 40, True, self.publisher)
+        self.assertEqual(sum(args[1] == "push" for args in self.publish_calls), 4)
+        self.assertFalse(any(args[-1].endswith(":latest") for args in self.publish_calls))
 
     def test_publication_failure_cannot_promote_latest(self):
         """A failed unique-tag push prevents all alias updates."""
