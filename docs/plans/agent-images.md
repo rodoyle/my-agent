@@ -8,10 +8,11 @@ issue controller or model gateway. The existing headless SDK sources reference
 missing modules and remain explicitly experimental. The macOS/MLX Python
 `local-agent/` is a separate host application, not a Linux image dependency.
 
-All Dockerfiles use **the agents repository root as build context**. Build in
-the k3s **`build` namespace with Kaniko**, not local Docker/Podman. The parent
-infra repository tracks this repository as a submodule; commit its changes
-inside `agents/` before updating the parent gitlink.
+All Dockerfiles use **the agents repository root as build context**. Use Kaniko
+in the k3s **`build` namespace** for manual cluster builds, or the isolated
+GitHub-hosted CI path in [image automation](agent-image-automation.md). Neither
+path uses local Docker/Podman builds. The parent infra repository tracks this
+repository as a submodule; commit inside `agents/` before updating its gitlink.
 
 ## Node/npm versus Bun
 
@@ -147,7 +148,8 @@ not claimed solely because the frontend builds.
 
 ## Least-privilege Kaniko builds
 
-The parent `environment.yaml` pins base identity plus the temporary
+The parent `environment.yaml` currently pins base identity only. A manual
+cluster build requires explicitly pinning and obtaining the temporary
 `build/pi-agent-image-build-task` Role. The user mints
 `~/.kube/agent.kubeconfig` and applies
 `../manifests/build/agent-image-task-access.yaml` from the infra root. It permits
