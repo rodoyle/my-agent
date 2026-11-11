@@ -4,6 +4,14 @@
   "private": true,
   "description": "Pinned Node-hosted Pi runtime and image-wide extension dependencies",
   "engines": { "node": ">=22.19.0" },
+  "piImage": {
+    "extensions": [
+      "pi-subagents",
+      "pi-lens",
+      "pi-goal-list-loop-audit",
+      "pi-intercom"
+    ]
+  },
   "dependencies": {
     "@earendil-works/pi-coding-agent": "1.5.0",
     "@kubernetes/client-node": "2.0.2",

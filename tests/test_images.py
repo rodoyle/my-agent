@@ -94,13 +94,22 @@ class ImageBuildTests(unittest.TestCase):
             root = Path(directory)
             seed = root / "seed"
             state = root / "state"
-            seed.mkdir()
-            (seed / "settings.json").write_text('{"packages":["fixture"]}\n')
+            (seed / "base").mkdir(parents=True)
+            (seed / "base/settings.json").write_text('{"packages":["fixture"]}\n')
             script = root / "entrypoint.sh"
-            script.write_text((ROOT / "base/agent-entrypoint.sh").read_text().replace("/opt/pi-defaults", str(seed)))
-            env = {**os.environ, "HOME": str(root), "PI_CODING_AGENT_DIR": str(state)}
+            script.write_text(
+                (ROOT / "base/agent-entrypoint.sh").read_text()
+                .replace("/opt/pi-defaults", str(seed))
+                .replace("/opt/pi-runtime/profile-config.mjs", str(ROOT / "base/profile-config.mjs"))
+            )
+            env = {
+                **os.environ,
+                "HOME": str(root),
+                "PI_CODING_AGENT_DIR": str(state),
+                "AGENT_PROFILE": "base",
+            }
             subprocess.run(["sh", str(script), "sh", "-c", "exit 0"], env=env, check=True, timeout=5)
-            self.assertEqual((state / "settings.json").read_bytes(), (seed / "settings.json").read_bytes())
+            self.assertEqual((state / "settings.json").read_bytes(), (seed / "base/settings.json").read_bytes())
             custom = '{"packages":[],"theme":"light"}\n'
             (state / "settings.json").write_text(custom)
             subprocess.run(["sh", str(script), "sh", "-c", "exit 0"], env=env, check=True, timeout=5)

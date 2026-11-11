@@ -1,0 +1,7 @@
+{
+  "extends": "base",
+  "packages": [],
+  "settings": {
+    "defaultProjectTrust": "never"
+  }
+}

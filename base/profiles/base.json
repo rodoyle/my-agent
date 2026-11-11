@@ -1,0 +1,7 @@
+{
+  "packages": "all",
+  "settings": {
+    "enableInstallTelemetry": false,
+    "defaultProjectTrust": "ask"
+  }
+}

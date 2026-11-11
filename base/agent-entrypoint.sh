@@ -3,13 +3,13 @@
 set -eu
 : "${HOME:=/home/agent}"
 : "${PI_CODING_AGENT_DIR:=$HOME/.pi/agent}"
-export HOME PI_CODING_AGENT_DIR
+: "${AGENT_PROFILE:=base}"
+export HOME PI_CODING_AGENT_DIR AGENT_PROFILE
 mkdir -p "$PI_CODING_AGENT_DIR"
-# Preserve operator settings, including deliberate package filters. First start
-# with an empty mounted HOME still gets every image-provided package.
-if [ ! -e "$PI_CODING_AGENT_DIR/settings.json" ]; then
-    cp /opt/pi-defaults/settings.json "$PI_CODING_AGENT_DIR/settings.json"
-fi
+# Seed empty state and safely refresh only settings still matching our marker.
+# A mounted HOME can therefore switch image profiles without overwriting edits.
+node /opt/pi-runtime/profile-config.mjs initialize \
+    /opt/pi-defaults "$PI_CODING_AGENT_DIR" "$AGENT_PROFILE"
 if [ "$#" -eq 0 ]; then
     set -- pi
 fi

@@ -22,12 +22,11 @@ RUN npm ci --ignore-scripts --no-audit --no-fund \
     && npm cache clean --force
 
 ENV PI_OFFLINE=1 PI_SKIP_VERSION_CHECK=1 PI_TELEMETRY=0
-# Register locked local packages with Pi itself, rather than merely npm-installing
-# extensions and hoping discovery sees them. This seed is copied on first start.
-RUN for package in pi-subagents pi-lens pi-goal-list-loop-audit pi-intercom; do \
-      PI_CODING_AGENT_DIR=/opt/pi-defaults pi install "/opt/pi-runtime/node_modules/$package"; \
-    done \
-    && node -e 'const fs=require("node:fs"),path=require("node:path"); const file="/opt/pi-defaults/settings.json"; const settings=JSON.parse(fs.readFileSync(file,"utf8")); settings.packages=settings.packages.map(source=>path.resolve("/opt/pi-defaults",source)); fs.writeFileSync(file,JSON.stringify(settings,null,2)+"\n");'
+# Profiles select the installed catalog from package.json. Compile Pi's documented
+# local-package settings directly, with absolute paths safe to relocate into HOME.
+COPY base/profile-config.mjs ./profile-config.mjs
+COPY base/profiles ./profiles
+RUN node profile-config.mjs compile /opt/pi-defaults
 
 # Herdr is a Rust binary, not the unrelated npm package named "herdr".
 ARG HERDR_VERSION=0.9.5
@@ -69,7 +68,8 @@ RUN chmod 755 /usr/local/bin/agent-entrypoint /usr/local/bin/ovis \
     && groupmod --new-name agent node \
     && mkdir -p /workspace /home/agent/.pi/agent /home/agent/.config \
     && chown -R 1000:1000 /workspace /home/agent
-ENV HOME=/home/agent \
+ENV AGENT_PROFILE=base \
+    HOME=/home/agent \
     PI_CODING_AGENT_DIR=/home/agent/.pi/agent \
     PI_CODING_AGENT_SESSION_DIR=/home/agent/.pi/agent/sessions \
     OVIS_STATE_DIR=/home/agent/.config/ovis \

@@ -43,11 +43,12 @@ lockfiles do not determine the base image's Pi version.
 
 `base/runtime/package-lock.json` locks the npm transitive dependency graph.
 Install with `npm ci --ignore-scripts`; explicitly run only ast-grep's binary
-linking postinstall, since pi-lens needs its native CLI. Register the locked
-extension directories with `pi install /opt/pi-runtime/node_modules/<package>`.
-This is Pi's documented **local package** source mechanism: simply putting npm
-packages on disk would not load them. The seed stores absolute package paths,
-so a mounted HOME does not need to download/reinstall them.
+linking postinstall, since pi-lens needs its native CLI. The `piImage.extensions`
+list in `base/runtime/package.json` is the shared extension catalog; versions
+remain in `dependencies` and the lockfile, not in Dockerfile install loops.
+`base/profile-config.mjs` compiles the profiles into Pi's documented **local
+package** settings with absolute sources under `/opt/pi-runtime/node_modules`.
+A mounted HOME therefore does not need to download/reinstall packages.
 
 Ovis gets its own upstream frozen Bun lockfile. Its release PTY host installer
 checks that the binary matches the checked-out Rust source tree and release
@@ -89,12 +90,37 @@ credentials, kubeconfig, API keys, git identity or cluster grant is baked in.
 Tini remains the entrypoint for signal forwarding and child reaping; overriding
 `command` in Kubernetes bypasses it, so override `args` when possible.
 
-Mount writable per-worker `/workspace` and `/home/agent` (or the configured
-Pi/session/state paths). `agent-entrypoint` copies `/opt/pi-defaults/settings.json`
-only when the active config directory lacks settings. It never overwrites
-operator settings: if an existing settings file is provided, the operator owns
-its package declarations, including intentional filters/disabling. Immutable
-code remains under `/opt/pi-runtime` and `/opt/ovis`; do not mount over it.
+### Declarative agent profiles
+
+`base/profiles/*.json` defines the intentional configuration differences:
+
+| Profile / image | Packages and settings |
+| --- | --- |
+| `base` | Entire installed extension catalog; project trust asks first |
+| `devpod` | Inherits base; explicitly selects interactive built-in tools |
+| `headless` | No catalog packages; project trust never; default CMD also disables executable-resource discovery |
+| `template` | Inherits base; starting point for specialist selection |
+
+A profile may `extends` one other profile. Settings shallowly override inherited
+settings. Omitted `packages` inherits the selection; `"all"` selects the catalog,
+`[]` selects none, and an array replaces the inherited selection. Package entries
+are names or objects such as `{"name":"pi-lens","extensions":[],"skills":[]}`.
+Resource filters use Pi's normal extensions/skills/prompts/themes semantics;
+empty arrays disable that resource type. `settings.defaultTools` selects tools,
+including Pi's `+name`/`-name` syntax. Profiles cannot select uninstalled packages
+or remote sources. Cycles, unknown fields/packages and invalid selections fail
+the build rather than silently dropping configuration.
+
+Each image sets `AGENT_PROFILE`; the build compiles defaults under
+`/opt/pi-defaults/<profile>/settings.json`. Mount writable per-worker `/workspace`
+and `/home/agent` (or the configured Pi/session/state paths). On startup,
+`agent-entrypoint` initializes the selected profile in `PI_CODING_AGENT_DIR`.
+A `.image-profile.json` hash marker permits refreshing unchanged image-managed
+settings when the image or profile changes. Operator-edited settings and legacy
+unmarked settings are preserved, including intentional package filters. To adopt
+new defaults deliberately, back up and remove `settings.json` before restarting.
+Never share one writable agent directory between running workers. Immutable code
+remains under `/opt/pi-runtime` and `/opt/ovis`; do not mount over it.
 
 `PI_OFFLINE=1`, `PI_TELEMETRY=0` and `PI_SKIP_VERSION_CHECK=1` avoid automatic Pi
 network refreshes, **not provider requests or arbitrary extension traffic**.
@@ -178,6 +204,8 @@ Local regression checks (no provider/cluster credentials needed):
 
 ```sh
 timeout 60 python3 -m unittest discover -s tests -v
+node --test tests/profile-config.test.mjs
+node --check base/profile-config.mjs
 node --check tests/image-smoke.mjs
 sh -n base/agent-entrypoint.sh base/ovis.sh
 ```
@@ -188,11 +216,11 @@ initialization, preservation of operator settings, exit-code propagation and
 rejection of unauthenticated remote Ovis binding. A harmless README change
 must not invalidate a build; an actual runtime source change must.
 
-The final base and devpod Dockerfile RUN gates execute as UID 1000. They query
+All four Dockerfile RUN gates execute as UID 1000. They query
 Node/npm/Bun/Pi/Herdr/git/gh/ast-grep versions, import the Kubernetes client,
 parse JavaScript with native ast-grep, and start real Pi RPC. `get_state` and
-`get_commands` must succeed, with registered extension commands attributed to
-all four package paths. No LLM prompt, token, external provider, or user
+`get_commands` must succeed, with extension commands matching the selected
+profile's package paths (including none for headless). No LLM prompt, token, external provider, or user
 credential is needed. Devpod also runs `kubectl version --client`.
 
 Build logs and image digests are recorded separately after actual cluster

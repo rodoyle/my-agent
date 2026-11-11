@@ -1,10 +1,22 @@
 // Credential-free image contract. Run as the final image user, never as root.
 import assert from 'node:assert/strict';
+import { readFileSync } from 'node:fs';
 import { spawn, execFileSync } from 'node:child_process';
 import { createRequire } from 'node:module';
+import path from 'node:path';
 import { pathToFileURL } from 'node:url';
 
 const require = createRequire('/opt/pi-runtime/package.json');
+const runtimeManifest = require('/opt/pi-runtime/package.json');
+const agentDirectory = process.env.PI_CODING_AGENT_DIR ?? path.join(process.env.HOME ?? '/home/agent', '.pi/agent');
+const settings = JSON.parse(readFileSync(path.join(agentDirectory, 'settings.json'), 'utf8'));
+assert.ok(Array.isArray(settings.packages), 'profile settings must contain a packages array');
+const selectedPackages = new Map(settings.packages.map(entry => {
+  const source = typeof entry === 'string' ? entry : entry?.source;
+  assert.equal(typeof source, 'string', 'profile package requires a source');
+  assert.ok(path.isAbsolute(source), `profile source must be absolute: ${source}`);
+  return [source, !(typeof entry === 'object' && Array.isArray(entry.extensions) && entry.extensions.length === 0)];
+}));
 assert.equal(process.getuid(), 1000, 'image must default to the non-root agent');
 assert.equal(process.versions.bun, undefined, 'Pi verification must run on Node');
 assert.ok(Number(process.versions.node.split('.')[0]) >= 22);
@@ -66,12 +78,14 @@ try {
   });
   assert.ok(responses.has('state'), 'Pi RPC did not answer get_state');
   const commands = responses.get('commands')?.data.commands ?? [];
-  for (const name of ['pi-subagents', 'pi-lens', 'pi-goal-list-loop-audit', 'pi-intercom']) {
-    assert.ok(commands.some(command => command.source === 'extension'
-      && JSON.stringify(command.sourceInfo).includes(`/node_modules/${name}`)),
-    `No loaded commands from ${name}; stderr: ${stderr}`);
+  for (const name of runtimeManifest.piImage.extensions) {
+    const source = path.join('/opt/pi-runtime/node_modules', name);
+    const shouldLoad = selectedPackages.get(source) === true;
+    const loaded = commands.some(command => command.source === 'extension'
+      && JSON.stringify(command.sourceInfo).includes(source));
+    assert.equal(loaded, shouldLoad, `Profile ${process.env.AGENT_PROFILE} package ${name}: expected loaded=${shouldLoad}; stderr: ${stderr}`);
   }
-  console.log('PASS: non-root Node Pi RPC and all four extension registrations; native AST and Kubernetes imports');
+  console.log(`PASS: non-root Node Pi RPC; ${selectedPackages.size} profile package(s), native AST and Kubernetes imports`);
 } finally {
   clearTimeout(deadline);
   if (child.exitCode === null && child.signalCode === null) child.kill('SIGKILL');

@@ -1,0 +1,6 @@
+{
+  "extends": "base",
+  "settings": {
+    "defaultTools": ["read", "bash", "edit", "write", "grep", "find", "ls"]
+  }
+}

@@ -17,6 +17,11 @@ ROOT = Path(__file__).resolve().parents[1]
 CONTEXT_FILES = (
     "base/Dockerfile",
     "base/agent-entrypoint.sh",
+    "base/profile-config.mjs",
+    "base/profiles/base.json",
+    "base/profiles/devpod.json",
+    "base/profiles/headless.json",
+    "base/profiles/template.json",
     "base/ovis.sh",
     "base/runtime/package.json",
     "base/runtime/package-lock.json",

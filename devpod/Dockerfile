@@ -2,6 +2,7 @@
 # immutable registry reference as BASE_IMAGE. Inherits Pi, extensions and Ovis.
 ARG BASE_IMAGE=ghcr.io/rodoyle/agents-base:latest
 FROM ${BASE_IMAGE}
+ENV AGENT_PROFILE=devpod
 SHELL ["/bin/bash", "-o", "pipefail", "-c"]
 USER root
 RUN apt-get update && apt-get install -y --no-install-recommends \
