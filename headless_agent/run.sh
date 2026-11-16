@@ -1,3 +1,8 @@
+#!/bin/sh
+# Load skills/extensions from the gitFS at $PI_CODING_AGENT_DIR (the agent
+# directory), not from the repo checkout. The agent directory is a PVC
+# populated by an initContainer that clones github.com/rodoyle/my-agent.git.
+set -eu
 exec pi \
   --mode rpc \
   --no-session \
@@ -6,8 +11,8 @@ exec pi \
   --no-extensions \
   --no-skills \
   --no-prompt-templates \
-  --extension /workspace/.pi/extensions/task-contract.ts \
-  --skill /workspace/.pi/skills/task-execution \
-  --skill /workspace/.pi/skills/verification \
-  --skill /workspace/.pi/skills/kubernetes-dev \
-  --append-system-prompt "$(cat /workspace/.pi/APPEND_SYSTEM.md)"
+  --extension "${PI_CODING_AGENT_DIR}/extensions/task-contract.ts" \
+  --skill "${PI_CODING_AGENT_DIR}/skills/task-execution" \
+  --skill "${PI_CODING_AGENT_DIR}/skills/verification" \
+  --skill "${PI_CODING_AGENT_DIR}/skills/kubernetes-dev" \
+  --append-system-prompt "$(cat "${PI_CODING_AGENT_DIR}/APPEND_SYSTEM.md")"

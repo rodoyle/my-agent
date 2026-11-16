@@ -43,6 +43,21 @@ RUN case "$(dpkg --print-architecture)" in \
     && echo "$checksum  /usr/local/bin/herdr" | sha256sum --check - \
     && chmod 755 /usr/local/bin/herdr
 
+# Pin, verify and select the native architecture; no curl-to-shell installer.
+# Match this version to the cluster's supported +/-1 minor skew before building.
+ARG KUBECTL_VERSION=v1.36.6
+RUN arch="$(dpkg --print-architecture)" \
+    && case "$arch" in amd64|arm64) ;; *) exit 1 ;; esac \
+    && curl --fail --location --retry 3 --max-time 120 \
+      "https://dl.k8s.io/release/${KUBECTL_VERSION}/bin/linux/${arch}/kubectl" \
+      -o /tmp/kubectl \
+    && curl --fail --location --retry 3 --max-time 60 \
+      "https://dl.k8s.io/release/${KUBECTL_VERSION}/bin/linux/${arch}/kubectl.sha256" \
+      -o /tmp/kubectl.sha256 \
+    && echo "$(cat /tmp/kubectl.sha256)  /tmp/kubectl" | sha256sum --check - \
+    && install -m 755 /tmp/kubectl /usr/local/bin/kubectl \
+    && rm /tmp/kubectl /tmp/kubectl.sha256
+
 FROM runtime AS ovis-build
 # github.com/devswha/herdr-web-ui redirects to devswha/ovis. Pin the release
 # commit as well as its dependency lock; never update or build on container start.

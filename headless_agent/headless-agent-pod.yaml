@@ -1,28 +1,75 @@
-env:
-  - name: OPENAI_BASE_URL
-    value: https://llm-gateway.ai-system.svc.cluster.local/v1
-  - name: OPENAI_API_KEY
-    valueFrom:
-      secretKeyRef:
-        name: agent-run-gh-1842
-        key: gateway-token
-  - name: PI_MODEL
-    value: coding.primary
-  - name: AGENT_RUN_ID
-    value: gh-1842-attempt-2
-    env:
-  - name: PI_CODING_AGENT_DIR
-    value: /run/pi/config
-  - name: PI_CODING_AGENT_SESSION_DIR
-    value: /run/pi/sessions/$(RUN_ID)
-volumeMounts:
-  - name: pi-session
-    mountPath: /run/pi/sessions
-  - name: workspace
-    mountPath: /workspace
-volumes:
-  - name: pi-session
-    emptyDir: {}
-  - name: workspace
-    emptyDir: {}
-    
+apiVersion: v1
+kind: Pod
+metadata:
+  name: headless-agent
+  labels:
+    app.kubernetes.io/name: headless-agent
+    app.kubernetes.io/instance: gh-1842-attempt-2
+spec:
+  securityContext:
+    runAsUser: 1000
+    fsGroup: 1000
+  initContainers:
+    - name: agent-config
+      image: busybox
+      command:
+        - sh
+        - -c
+        - |
+          git clone --depth 1 --branch "${GIT_BRANCH:-main}" \
+            https://github.com/rodoyle/my-agent.git /home/agent/.pi/agent
+      env:
+        - name: GIT_BRANCH
+          value: main
+      volumeMounts:
+        - name: agent-pvc
+          mountPath: /home/agent/.pi/agent
+  containers:
+    - name: pi
+      image: ghcr.io/rodoyle/agents-headless:latest
+      command:
+        - pi
+        - --mode
+        - rpc
+        - --no-session
+        - --no-approve
+        - --no-extensions
+        - --no-skills
+        - --no-prompt-templates
+        - --no-context-files
+      env:
+        - name: OPENAI_BASE_URL
+          value: https://llm-gateway.ai-system.svc.cluster.local/v1
+        - name: OPENAI_API_KEY
+          valueFrom:
+            secretKeyRef:
+              name: agent-run-gh-1842
+              key: gateway-token
+        - name: PI_MODEL
+          value: coding.primary
+        - name: AGENT_RUN_ID
+          value: gh-1842-attempt-2
+        - name: PI_CODING_AGENT_DIR
+          value: /home/agent/.pi/agent
+        - name: PI_CODING_AGENT_SESSION_DIR
+          value: /run/pi/sessions/${AGENT_RUN_ID}
+      volumeMounts:
+        - name: agent-pvc
+          mountPath: /home/agent/.pi/agent
+        - name: pi-session
+          mountPath: /run/pi/sessions
+        - name: workspace
+          mountPath: /workspace
+        - name: task
+          mountPath: /workspace/.agent
+  volumes:
+    - name: agent-pvc
+      persistentVolumeClaim:
+        claimName: headless-agent-pi-config
+    - name: pi-session
+      emptyDir: {}
+    - name: workspace
+      emptyDir: {}
+    - name: task
+      persistentVolumeClaim:
+        claimName: headless-agent-task

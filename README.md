@@ -17,7 +17,20 @@ release reports and short-lived workflow-token boundary.
 [CI release verification](docs/plans/agent-image-automation-verification.md)
 records the successful four-image GHCR release and publish-only recovery run.
 
-## Local-first experiment
+## DevPod Agent
+
+The DevPod Agent is an in-cluster coding agent which replicates the local dev box experience but within a kubernetes cluster. This is particularly useful for developing CRDs, Operators, and DevOps tasks.
+The primary access is via `kubectl exec --it pod/devpod -- herdr session attach`.
+It is inspired by but subtly different from VSCode dev containers, devspace, and devpod itself, which primarily use SSH for remote access.
+
+Secondar access is provided by the herder-web-ui Ovis.
+Auth is intended to work via JWT or Client TLS certificate, not ssh keys.
+
+The primary security boundary comes from the K8s RBAC service account and capabilities attached to the container, not the agent harness.
+
+It is intended that multiple instances with distinct permissions are possible to run. 
+
+## Local-Agent experiment
 
 Most agent harnesses assume 128k+ context windows, which doesn't work for offline and locally hosted agents.
 Still, I am lazy and want to use these tools while disconnected.
@@ -25,7 +38,7 @@ OMLX is more than capable of sufficient tokens per second now for personal use w
 
 This is an experiment to pair a "local first" coding agent with OMLX for offline development.
 
-## Concept
+### Local Agent Concept
 
 The core idea here is to get as much milage out of a "free but dumb" LLM as possible.
 We do this in two ways.
@@ -45,18 +58,6 @@ Examples:
 - Redirecting tool and mcp responses to memory not context. 
 - Calling modality-specific tools like pandoc, ffmpeg, quarto, mupdf, cargo xtask, LLVM-utils, or kubectl.
 - Using platform-specific tools like locate, xcode utilities, dtrace, or zsh utilities
-
-## Candidate Frameworks
-
-The smart-but-expensive AI (Sonnet 4.6) suggested MLX-Code and Pi-agent as the two lead contenders.
-Previously testing with pi-agent had mixed results. It doesn't intercept large-response tool calls.
-
-
-MLX-Code uses code instead of text to guide agent behavior.
-Specifically, tool wrapper classes allow selected capabilities to be exposed.
-These take the place of SKILLS.md.
-More importantly, tool wrappers allow interception of massive tool results.
-We can pas a brief summary to the model context and dumping the long form results to the agent's memory bank on disk.
 
 ## Usage
 

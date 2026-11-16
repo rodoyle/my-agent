@@ -98,7 +98,8 @@ class ImageBuildTests(unittest.TestCase):
             (seed / "base/settings.json").write_text('{"packages":["fixture"]}\n')
             script = root / "entrypoint.sh"
             script.write_text(
-                (ROOT / "base/agent-entrypoint.sh").read_text()
+                (ROOT / "base/agent-entrypoint.sh")
+                .read_text()
                 .replace("/opt/pi-defaults", str(seed))
                 .replace("/opt/pi-runtime/profile-config.mjs", str(ROOT / "base/profile-config.mjs"))
             )
