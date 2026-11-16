@@ -1,5 +1,5 @@
-## Rules
-
+## Agents Repo Rules
+- Run pre-commit ci script, including betterleaks (should auto-trigger)
 - Small TODO items are marked inline with `# TODO - <task>`
 - Plans go in docs/plans/*.md Consult these for a list of plans
 
